@@ -1,0 +1,906 @@
+MySQL is a widely used relational database management system (RDBMS).
+get all Databases - SELECT * FROM Customers; --customers is database
+get Categories from specifif Database - SELECT * FROM [Employees] --employees is one of the category in database
+
+select statement
+1.Select all the different values from the Country column in the Customers table.
+SELECT DISTINCT Country FROM Customers;
+2.Write a statement that will select the City column from the Customers table.
+select city from Customers;
+SELECT CustomerName, City, Country FROM Customers;
+
+WHERE clause
+SELECT * FROM Customers
+WHERE Country='Mexico';
+
+SELECT * FROM Customers
+WHERE CustomerID=1;
+
+        MySQL AND, OR and NOT Operators
+Use the NOT keyword to select all records where City is NOT "Berlin".
+select * from Customers
+where not city ="Berlin";
+
+Select all records where the CustomerID column has the value 32.
+
+SELECT * FROM Customers
+where CustomerID =32;
+
+Select all records where the City column has the value 'Berlin' and the PostalCode column has the value 12209.
+select * FROM Customers
+where City = 'Berlin' and  PostalCode = 12209;
+
+Select all records where the City column has the value 'Berlin' or 'London'.
+select * FROM Customers
+where City = 'Berlin' or City = 'London';
+
+SELECT * FROM Customers
+WHERE Country = 'Germany' AND City = 'Berlin';
+
+SELECT * FROM Customers
+WHERE Country = 'Germany' AND (City = 'Berlin' OR City = 'Stuttgart');
+
+SELECT * FROM Customers
+WHERE NOT Country = 'Germany' AND NOT Country = 'USA';
+
+order by keyword
+The ORDER BY keyword sorts the records in ascending order by default. To sort the records in descending order, 
+use the DESC keyword.
+
+SELECT * FROM Customers
+ORDER BY Country;
+
+SELECT * FROM Customers
+ORDER BY Country DESC;
+
+SELECT * FROM Customers
+ORDER BY Country, CustomerName;
+
+SELECT * FROM Customers
+ORDER BY Country ASC, CustomerName DESC;
+
+                            INSERT INTO Statement is used to insert new records in a table.
+#### Insert Data Only in Specified Columns
+INSERT INTO Customers (CustomerName, ContactName, Address, City, PostalCode, Country)
+VALUES ('Cardinal', 'Tom B. Erichsen', 'Skagen 21', 'Stavanger', '4006', 'Norway');
+
+			 NULL Values
+The IS NULL operator is used to test for empty values (NULL values).
+SELECT CustomerName, ContactName, Address
+FROM Customers
+WHERE Address IS NULL;
+
+The IS NOT NULL Operator
+SELECT CustomerName, ContactName, Address
+FROM Customers
+WHERE Address IS NOT NULL;
+
+
+		# UPDATE Statement
+UPDATE Customers
+SET ContactName = 'Alfred Schmidt', City = 'Frankfurt'
+WHERE CustomerID = 1;
+
+
+DELETE Statement
+DELETE FROM Customers WHERE CustomerName='Alfreds Futterkiste';
+# delete all records --but keeps table------A) DELETE FROM table_name;
+
+
+LIMIT Clause
+#LIMIT clause is used to specify the number of records to return.
+syntax:
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+LIMIT number;
+
+get 3 records
+SELECT * FROM Customers LIMIT 3;
+
+SELECT * FROM Customers
+WHERE Country='Germany'
+LIMIT 3;
+
+
+MySQL MIN() and MAX() Functions
+SELECT MIN(Price) AS SmallestPrice
+FROM Products;
+
+SELECT MAX(Price) AS LargestPrice
+FROM Products;
+
+MySQL COUNT(), AVG() and SUM() Functions
+SELECT COUNT(ProductID)
+FROM Products;
+
+SELECT AVG(Price)
+FROM Products;
+
+SELECT SUM(Quantity)
+FROM OrderDetails;
+
+MySQL LIKE Operator
+The LIKE operator is used in a WHERE clause to search for a specified pattern in a column.
+There are two wildcards often used in conjunction with the LIKE operator:
+
+The percent sign (%) represents zero, one, or multiple characters
+The underscore sign (_) represents one, single character
+The percent sign and the underscore can also be used in combinations!
+
+SELECT * FROM Customers
+WHERE CustomerName LIKE '%a';  ---->end with a -----'a%' --->start with a
+
+
+The following SQL statement selects all customers with a CustomerName that have "or" in any position:
+SELECT * FROM Customers
+WHERE CustomerName LIKE '%or%'
+
+The following SQL statement selects all customers with a CustomerName that have "r" in the second position:
+SELECT * FROM Customers
+WHERE CustomerName LIKE '_r%';
+
+
+MySQL Wildcards
+A wildcard character is used to substitute one or more characters in a string.
+
+SELECT * FROM Customers
+WHERE City LIKE '_ondon';
+
+SELECT * FROM Customers
+WHERE City LIKE 'L_n_on';
+
+The MySQL IN Operator
+The IN operator allows you to specify multiple values in a WHERE clause.
+The IN operator is a shorthand for multiple OR conditions.
+
+The following SQL statement selects all customers that are located in "Germany", "France" or "UK":
+SELECT * FROM Customers
+WHERE Country IN ('Germany', 'France', 'UK');
+
+SELECT * FROM Customers
+WHERE Country NOT IN ('Germany', 'France', 'UK');
+
+The following SQL statement selects all customers that are from the same countries as the suppliers:
+SELECT * FROM Customers
+WHERE Country IN (SELECT Country FROM Suppliers);
+
+MySQL BETWEEN Operator
+The BETWEEN operator selects values within a given range. The values can be numbers, text, or dates.
+SELECT * FROM Products
+WHERE Price BETWEEN 10 AND 20;
+
+SELECT * FROM Products
+WHERE Price BETWEEN 10 AND 20
+AND CategoryID NOT IN (1,2,3);
+
+The following SQL statement selects all products with a ProductName between "Carnarvon Tigers" and "Mozzarella di Giovanni":
+SELECT * FROM Products
+WHERE ProductName BETWEEN 'Carnarvon Tigers' AND 'Mozzarella di Giovanni'
+ORDER BY ProductName;
+
+MySQL Aliases -as keyword(temp name)
+SELECT CustomerID AS ID, CustomerName AS Customer
+FROM Customers;
+
+SELECT CustomerName, CONCAT_WS(', ', Address, PostalCode, City, Country) AS Address
+FROM Customers;
+
+SELECT o.OrderID, o.OrderDate, c.CustomerName
+FROM Customers AS c, Orders AS o
+WHERE c.CustomerName='Around the Horn' AND c.CustomerID=o.CustomerID;
+
+
+MySQL Joins
+A JOIN clause is used to combine rows from two or more tables, based on a related column between them.
+SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate
+FROM Orders
+INNER JOIN Customers ON Orders.CustomerID=Customers.CustomerID;
+
+
+INNER JOIN: Returns records that have matching values in both tables
+LEFT JOIN: Returns all records from the left table, and the matched records from the right table
+RIGHT JOIN: Returns all records from the right table, and the matched records from the left table
+CROSS JOIN: Returns all records from both tables
+
+SELECT Orders.OrderID, Customers.CustomerName, Orders.OrderDate
+FROM Orders
+INNER JOIN Customers ON Orders.CustomerID=Customers.CustomerID;
+
+Inner Join
+
+SELECT Orders.OrderID, Customers.CustomerName
+FROM Orders
+INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+
+
+JOIN Three Tables
+SELECT Orders.OrderID, Customers.CustomerName, Shippers.ShipperName
+FROM ((Orders
+INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID)
+INNER JOIN Shippers ON Orders.ShipperID = Shippers.ShipperID);
+
+Left JOIN
+
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+LEFT JOIN Orders ON Customers.CustomerID = Orders.CustomerID
+ORDER BY Customers.CustomerName;
+
+MySQL RIGHT JOIN Keyword
+SELECT Orders.OrderID, Employees.LastName, Employees.FirstName
+FROM Orders
+RIGHT JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+ORDER BY Orders.OrderID;
+
+The CROSS JOIN keyword returns all records from both tables (table1 and table2).
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+CROSS JOIN Orders;
+
+If you add a WHERE clause (if table1 and table2 has a relationship), the CROSS JOIN will produce the same result as the INNER JOIN clause:
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+CROSS JOIN Orders
+WHERE Customers.CustomerID=Orders.CustomerID;
+
+
+SELF JOIN
+A self join is a regular join, but the table is joined with itself.
+
+The following SQL statement matches customers that are from the same city:
+SELECT A.CustomerName AS CustomerName1, B.CustomerName AS CustomerName2, A.City
+FROM Customers A, Customers B
+WHERE A.CustomerID <> B.CustomerID
+AND A.City = B.City 
+ORDER BY A.City;
+
+Union operator
+The UNION operator is used to combine the result-set of two or more SELECT statements.
+
+Every SELECT statement within UNION must have the same number of columns
+The columns must also have similar data types
+
+The columns in every SELECT statement must also be in the same order
+SELECT column_name(s) FROM table1
+UNION
+SELECT column_name(s) FROM table2;
+
+ex:
+SELECT City FROM Customers
+UNION
+SELECT City FROM Suppliers
+ORDER BY City;
+
+The UNION operator selects only distinct values by default. To allow duplicate values, use UNION ALL:
+SELECT column_name(s) FROM table1
+UNION ALL
+SELECT column_name(s) FROM table2;
+
+ex:
+The following SQL statement returns the cities (duplicate values also) from both the "Customers" and the "Suppliers" table:
+SELECT City FROM Customers
+UNION ALL
+SELECT City FROM Suppliers
+ORDER BY City;
+
+SQL UNION With WHERE
+The following SQL statement returns the German cities (only distinct values) from both the "Customers" and the "Suppliers" table:
+SELECT City, Country FROM Customers
+WHERE Country='Germany'
+UNION
+SELECT City, Country FROM Suppliers
+WHERE Country='Germany'
+ORDER BY City;
+
+The following SQL statement returns the German cities (duplicate values also) from both the "Customers" and the "Suppliers" table:
+SELECT City, Country FROM Customers
+WHERE Country='Germany'
+UNION ALL
+SELECT City, Country FROM Suppliers
+WHERE Country='Germany'
+ORDER BY City;
+
+ UNION Example
+The following SQL statement lists all customers and suppliers:
+SELECT 'Customer' AS Type, ContactName, City, Country
+FROM Customers
+UNION
+SELECT 'Supplier', ContactName, City, Country
+FROM Suppliers
+
+
+
+MySQL GROUP BY Statement:
+
+The GROUP BY statement groups rows that have the same values into summary rows, like "find the number of customers in each country".
+The GROUP BY statement is often used with aggregate functions (COUNT(), MAX(), MIN(), SUM(), AVG()) to group the result-set by one or more columns.
+
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+GROUP BY column_name(s)
+ORDER BY column_name(s);
+
+ex:
+SELECT COUNT(CustomerID), Country
+FROM Customers
+GROUP BY Country;
+
+GROUP BY With JOIN Example
+
+The following SQL statement lists the number of orders sent by each shipper:
+SELECT Shippers.ShipperName,COUNT(Orders.OrderID) AS NumberOfOrders FROM Orders
+LEFT JOIN Shippers ON Orders.ShipperID = Shippers.ShipperID
+GROUP BY ShipperName;
+
+
+MySQL HAVING Clause
+The HAVING clause was added to SQL because the WHERE keyword cannot be used with aggregate functions.
+syntax:
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+GROUP BY column_name(s)
+HAVING condition
+
+ex:The following SQL statement lists the number of customers in each country. Only include countries with more than 5 customers:
+SELECT COUNT(CustomerID), Country
+FROM Customers
+GROUP BY Country
+HAVING COUNT(CustomerID) > 5;
+
+he following SQL statement lists the employees that have registered more than 10 orders:
+SELECT Employees.LastName, COUNT(Orders.OrderID) AS NumberOfOrders
+FROM (Orders
+INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID)
+GROUP BY LastName
+HAVING COUNT(Orders.OrderID) > 10;
+
+The following SQL statement lists if the employees "Davolio" or "Fuller" have registered more than 25 orders:
+SELECT Employees.LastName, COUNT(Orders.OrderID) AS NumberOfOrders
+FROM Orders
+INNER JOIN Employees ON Orders.EmployeeID = Employees.EmployeeID
+WHERE LastName = 'Davolio' OR LastName = 'Fuller'
+GROUP BY LastName
+HAVING COUNT(Orders.OrderID) > 25;
+ORDER BY column_name(s);
+
+MySQL EXISTS Operator
+he EXISTS operator is used to test for the existence of any record in a subquery.
+The EXISTS operator returns TRUE if the subquery returns one or more records.
+
+syntax:
+SELECT column_name(s)
+FROM table_name
+WHERE EXISTS
+(SELECT column_name FROM table_name WHERE condition);
+
+ex:The following SQL statement returns TRUE and lists the suppliers with a product price less than 20:
+SELECT SupplierName
+FROM Suppliers
+WHERE EXISTS (SELECT ProductName FROM Products WHERE Products.SupplierID = Suppliers.supplierID AND Price < 20);
+
+
+MySQL ANY and ALL Operators
+The ANY and ALL operators allow you to perform a comparison between a single column value and a range of other values.
+ANY means that the condition will be true if the operation is true for any of the values in the range.
+ALL is used with SELECT, WHERE and HAVING statements
+
+SQL ANY Examples
+ex:The following SQL statement lists the ProductName if it finds ANY records in the OrderDetails table has Quantity equal to 10 (this will return TRUE because the Quantity column has some values of 10):
+SELECT ProductName
+FROM Products
+WHERE ProductID = ANY
+  (SELECT ProductID
+  FROM OrderDetails
+  WHERE Quantity = 10);
+
+SQL ALL Examples
+The following SQL statement lists the ProductName if ALL the records in the OrderDetails table has Quantity equal to 10. This will of course return FALSE because the Quantity column has many different values (not only the value of 10):
+SELECT ProductName
+FROM Products
+WHERE ProductID = ALL
+  (SELECT ProductID
+  FROM OrderDetails
+  WHERE Quantity = 10);
+
+The MySQL INSERT INTO SELECT Statement
+The INSERT INTO SELECT statement copies data from one table and inserts it into another table.
+The INSERT INTO SELECT statement requires that the data types in source and target tables matches.
+ex:
+The following SQL statement copies "Suppliers" into "Customers" (the columns that are not filled with data, will contain NULL):
+INSERT INTO Customers (CustomerName, City, Country)
+SELECT SupplierName, City, Country FROM Suppliers;
+
+The following SQL statement copies only the German suppliers into "Customers":INSERT INTO Customers (CustomerName, City, Country)
+SELECT SupplierName, City, Country FROM Suppliers
+WHERE Country='Germany';
+
+
+The MySQL CASE Statement
+The CASE statement goes through conditions and returns a value when the first condition is met (like an if-then-else statement). So, once a condition is true, it will stop reading and return the result. If no conditions are true, it returns the value in the ELSE clause.
+
+If there is no ELSE part and no conditions are true, it returns NULL.
+
+The following SQL goes through conditions and returns a value when the first condition is met:
+Example
+SELECT OrderID, Quantity,
+CASE
+    WHEN Quantity > 30 THEN 'The quantity is greater than 30'
+    WHEN Quantity = 30 THEN 'The quantity is 30'
+    ELSE 'The quantity is under 30'
+END AS QuantityText
+FROM OrderDetails;
+
+The following SQL will order the customers by City. However, if City is NULL, then order by Country:
+Example
+SELECT CustomerName, City, Country
+FROM Customers
+ORDER BY
+(CASE
+    WHEN City IS NULL THEN Country
+    ELSE City
+END);
+
+
+MySQL NULL Functions
+MySQL IFNULL() and COALESCE() Functions
+
+The MySQL IFNULL() function lets you return an alternative value if an expression is NULL.
+SELECT ProductName, UnitPrice * (UnitsInStock + IFNULL(UnitsOnOrder, 0))
+FROM Products;
+
+MySQL COALESCE() Function
+SELECT ProductName, UnitPrice * (UnitsInStock + COALESCE(UnitsOnOrder, 0))
+FROM Products;
+
+MySQL Comments
+Comments are used to explain sections of SQL statements, or to prevent execution of SQL statements.
+
+Single Line Comments
+Single line comments start with --.
+ex:
+-- Select all:
+SELECT * FROM Customers;
+
+Multi-line Comments
+Multi-line comments start with /* and end with */.
+ex:
+/*Select all the columns
+of all the records
+in the Customers table:*/
+SELECT * FROM Customers;
+
+
+MySQL Operators
+MySQL Arithmetic Operators
++	Add	
+-	Subtract	
+*	Multiply	
+/	Divide	
+%	Modulo
+SELECT 17 % 5;
+
+MySQL Bitwise Operators
+&	Bitwise AND
+|	Bitwise OR
+^	Bitwise exclusive OR
+
+MySQL Comparison Operators
+Operator	Description	
+=	Equal to	
+>	Greater than	
+<	Less than	
+>=	Greater than or equal to	
+<=	Less than or equal to	
+<>	Not equal to
+SELECT * FROM Products
+WHERE Price = 18;
+
+MySQL Compound Operators
+Operator	Description
++=	Add equals
+-=	Subtract equals
+*=	Multiply equals
+/=	Divide equals
+%=	Modulo equals
+&=	Bitwise AND equals
+^-=	Bitwise exclusive equals
+|*=	Bitwise OR equals
+
+MySQL Logical Operators
+Operator	Description	
+ALL	TRUE if all of the subquery values meet the condition	
+AND	TRUE if all the conditions separated by AND is TRUE	
+ANY	TRUE if any of the subquery values meet the condition	
+BETWEEN	TRUE if the operand is within the range of comparisons	
+EXISTS	TRUE if the subquery returns one or more records	
+IN	TRUE if the operand is equal to one of a list of expressions	
+LIKE	TRUE if the operand matches a pattern	
+NOT	Displays a record if the condition(s) is NOT TRUE	
+OR	TRUE if any of the conditions separated by OR is TRUE	
+SOME	TRUE if any of the subquery values meet the condition
+
+SELECT * FROM Products
+WHERE Price > ALL (SELECT Price FROM Products WHERE Price > 500);
+
+SELECT * FROM Customers
+WHERE City = "London" AND Country = "UK";
+
+SELECT * FROM Products
+WHERE Price > ANY (SELECT Price FROM Products WHERE Price > 50);
+
+SELECT * FROM Products
+WHERE Price BETWEEN 50 AND 60;
+
+SELECT * FROM Products
+WHERE EXISTS (SELECT Price FROM Products WHERE Price > 50);
+
+SELECT * FROM Customers
+WHERE City IN ('Paris','London');
+
+SELECT * FROM Customers
+WHERE City LIKE 's%';
+
+SELECT * FROM Customers
+WHERE City NOT LIKE 's%';
+
+SELECT * FROM Customers
+WHERE City = "London" OR Country = "UK";
+
+SELECT * FROM Products
+WHERE Price > SOME (SELECT Price FROM Products WHERE Price > 20);
+
+
+The MySQL CREATE DATABASE Statement
+The CREATE DATABASE statement is used to create a new SQL database.
+
+Syntax
+CREATE DATABASE databasename;
+
+check databases: show databases;
+
+delete a database named testDB.
+DROP DATABASE testDB;
+
+The CREATE TABLE statement is used to create a new table in a database.
+CREATE TABLE table_name (
+    column1 datatype,
+    column2 datatype,
+    column3 datatype,
+   ....
+);
+ex:
+CREATE TABLE Persons (
+    PersonID int,
+    LastName varchar(255),
+    FirstName varchar(255),
+    Address varchar(255),
+    City varchar(255)
+);
+
+Create Table Using Another Table
+The following SQL creates a new table called "TestTables" (which is a copy of the "Customers" table): 
+Example:
+CREATE TABLE TestTable AS
+SELECT customername, contactname
+FROM customers;
+
+The MySQL DROP TABLE Statement
+The DROP TABLE statement is used to drop an existing table in a database.
+
+Syntax
+DROP TABLE table_name;
+
+MySQL TRUNCATE TABLE
+The TRUNCATE TABLE statement is used to delete the data inside a table, but not the table itself.
+
+Syntax
+TRUNCATE TABLE table_name;
+
+MySQL ALTER TABLE Statement
+The ALTER TABLE statement is used to add, delete, or modify columns in an existing table.
+
+The ALTER TABLE statement is also used to add and drop various constraints on an existing table.
+
+ALTER TABLE - ADD Column
+To add a column in a table, use the following syntax:
+ALTER TABLE table_name
+ADD column_name datatype;
+
+The following SQL adds an "Email" column to the "Customers" table:
+Example
+ALTER TABLE Customers
+ADD Email varchar(255);
+
+
+ALTER TABLE - DROP COLUMN
+To delete a column in a table, use the following syntax (notice that some database systems don't allow deleting a column):
+ALTER TABLE table_name
+DROP COLUMN column_name;
+
+The following SQL deletes the "Email" column from the "Customers" table:
+Example
+ALTER TABLE Customers
+DROP COLUMN Email;
+
+ALTER TABLE - MODIFY COLUMN
+To change the data type of a column in a table, use the following syntax:
+ALTER TABLE table_name
+MODIFY COLUMN column_name datatype;
+
+Now we want to add a column named "DateOfBirth" in the "Persons" table.
+We use the following SQL statement:
+Example
+ALTER TABLE Persons
+ADD DateOfBirth date;
+
+Change Data Type Example
+Now we want to change the data type of the column named "DateOfBirth" in the "Persons" table.
+We use the following SQL statement:
+Example
+ALTER TABLE Persons
+MODIFY COLUMN DateOfBirth year;
+
+MySQL Constraints
+SQL constraints are used to specify rules for data in a table.
+
+Create Constraints
+Constraints can be specified when the table is created with the CREATE TABLE statement, or after the table is created with the ALTER TABLE statement.
+
+Syntax
+CREATE TABLE table_name (
+    column1 datatype constraint,
+    column2 datatype constraint,
+    column3 datatype constraint,
+    ....
+);
+
+
+MySQL Constraints
+SQL constraints are used to specify rules for the data in a table.
+
+Constraints are used to limit the type of data that can go into a table. This ensures the accuracy and reliability of the data in the table. If there is any violation between the constraint and the data action, the action is aborted.
+
+Constraints can be column level or table level. Column level constraints apply to a column, and table level constraints apply to the whole table.
+
+The following constraints are commonly used in SQL:
+
+NOT NULL - Ensures that a column cannot have a NULL value
+UNIQUE - Ensures that all values in a column are different
+PRIMARY KEY - A combination of a NOT NULL and UNIQUE. Uniquely identifies each row in a table
+FOREIGN KEY - Prevents actions that would destroy links between tables
+CHECK - Ensures that the values in a column satisfies a specific condition
+DEFAULT - Sets a default value for a column if no value is specified
+CREATE INDEX - Used to create and retrieve data from the database very quickly
+
+NOT NULL on CREATE TABLE
+The following SQL ensures that the "ID", "LastName", and "FirstName" columns will NOT accept NULL values when the "Persons" table is created:
+
+Example
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255) NOT NULL,
+    Age int
+);
+
+NOT NULL on ALTER TABLE
+To create a NOT NULL constraint on the "Age" column when the "Persons" table is already created, use the following SQL:
+
+Example
+ALTER TABLE Persons
+MODIFY Age int NOT NULL;
+
+UNIQUE Constraint on CREATE TABLE
+The following SQL creates a UNIQUE constraint on the "ID" column when the "Persons" table is created:
+
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    UNIQUE (ID)
+);
+To name a UNIQUE constraint, and to define a UNIQUE constraint on multiple columns, use the following SQL syntax:
+
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    CONSTRAINT UC_Person UNIQUE (ID,LastName)
+);
+
+UNIQUE Constraint on ALTER TABLE
+To create a UNIQUE constraint on the "ID" column when the table is already created, use the following SQL:
+
+ALTER TABLE Persons
+ADD UNIQUE (ID);
+To name a UNIQUE constraint, and to define a UNIQUE constraint on multiple columns, use the following SQL syntax:
+
+ALTER TABLE Persons
+ADD CONSTRAINT UC_Person UNIQUE (ID,LastName);
+DROP a UNIQUE Constraint
+To drop a UNIQUE constraint, use the following SQL:
+
+ALTER TABLE Persons
+DROP INDEX UC_Person;
+
+MySQL PRIMARY KEY Constraint
+The PRIMARY KEY constraint uniquely identifies each record in a table.
+
+Primary keys must contain UNIQUE values, and cannot contain NULL values.
+
+A table can have only ONE primary key; and in the table, this primary key can consist of single or multiple columns (fields).
+
+PRIMARY KEY on CREATE TABLE
+The following SQL creates a PRIMARY KEY on the "ID" column when the "Persons" table is created:
+
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    PRIMARY KEY (ID)
+);
+To allow naming of a PRIMARY KEY constraint, and for defining a PRIMARY KEY constraint on multiple columns, use the following SQL syntax:
+
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    CONSTRAINT PK_Person PRIMARY KEY (ID,LastName)
+);
+Note: In the example above there is only ONE PRIMARY KEY (PK_Person). However, the VALUE of the primary key is made up of TWO COLUMNS (ID + LastName).
+
+PRIMARY KEY on ALTER TABLE
+To create a PRIMARY KEY constraint on the "ID" column when the table is already created, use the following SQL:
+
+ALTER TABLE Persons
+ADD PRIMARY KEY (ID);
+To allow naming of a PRIMARY KEY constraint, and for defining a PRIMARY KEY constraint on multiple columns, use the following SQL syntax:
+
+ALTER TABLE Persons
+ADD CONSTRAINT PK_Person PRIMARY KEY (ID,LastName);
+Note: If you use ALTER TABLE to add a primary key, the primary key column(s) must have been declared to not contain NULL values (when the table was first created).
+
+DROP a PRIMARY KEY Constraint
+To drop a PRIMARY KEY constraint, use the following SQL:
+
+ALTER TABLE Persons
+DROP PRIMARY KEY;
+
+MySQL FOREIGN KEY Constraint
+The FOREIGN KEY constraint is used to prevent actions that would destroy links between tables.
+
+A FOREIGN KEY is a field (or collection of fields) in one table, that refers to the PRIMARY KEY in another table.
+
+The table with the foreign key is called the child table, and the table with the primary key is called the referenced or parent table.
+
+FOREIGN KEY on CREATE TABLE
+The following SQL creates a FOREIGN KEY on the "PersonID" column when the "Orders" table is created:
+
+CREATE TABLE Orders (
+    OrderID int NOT NULL,
+    OrderNumber int NOT NULL,
+    PersonID int,
+    PRIMARY KEY (OrderID),
+    FOREIGN KEY (PersonID) REFERENCES Persons(PersonID)
+);
+
+To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns, use the following SQL syntax:
+
+CREATE TABLE Orders (
+    OrderID int NOT NULL,
+    OrderNumber int NOT NULL,
+    PersonID int,
+    PRIMARY KEY (OrderID),
+    CONSTRAINT FK_PersonOrder FOREIGN KEY (PersonID)
+    REFERENCES Persons(PersonID)
+);
+
+FOREIGN KEY on ALTER TABLE
+To create a FOREIGN KEY constraint on the "PersonID" column when the "Orders" table is already created, use the following SQL:
+
+ALTER TABLE Orders
+ADD FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
+To allow naming of a FOREIGN KEY constraint, and for defining a FOREIGN KEY constraint on multiple columns, use the following SQL syntax:
+
+ALTER TABLE Orders
+ADD CONSTRAINT FK_PersonOrder
+FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);
+DROP a FOREIGN KEY Constraint
+To drop a FOREIGN KEY constraint, use the following SQL:
+
+ALTER TABLE Orders
+DROP FOREIGN KEY FK_PersonOrder;
+
+
+MySQL CHECK Constraint
+The CHECK constraint is used to limit the value range that can be placed in a column.
+
+If you define a CHECK constraint on a column it will allow only certain values for this column.
+
+If you define a CHECK constraint on a table it can limit the values in certain columns based on values in other columns in the row.
+
+CHECK on CREATE TABLE
+The following SQL creates a CHECK constraint on the "Age" column when the "Persons" table is created. The CHECK constraint ensures that the age of a person must be 18, or older:
+
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    CHECK (Age>=18)
+);
+
+
+MySQL DEFAULT Constraint
+The DEFAULT constraint is used to set a default value for a column.
+
+The default value will be added to all new records, if no other value is specified.
+
+DEFAULT on CREATE TABLE
+The following SQL sets a DEFAULT value for the "City" column when the "Persons" table is created:
+
+CREATE TABLE Persons (
+    ID int NOT NULL,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    City varchar(255) DEFAULT 'Sandnes'
+);
+The DEFAULT constraint can also be used to insert system values, by using functions like CURRENT_DATE():
+
+CREATE TABLE Orders (
+    ID int NOT NULL,
+    OrderNumber int NOT NULL,
+    OrderDate date DEFAULT CURRENT_DATE()
+);
+
+
+MySQL CREATE INDEX Statement
+The CREATE INDEX statement is used to create indexes in tables.
+
+Indexes are used to retrieve data from the database more quickly than otherwise. The users cannot see the indexes, they are just used to speed up searches/queries.
+CREATE INDEX index_name
+ON table_name (column1, column2, ...);
+
+
+What is an AUTO INCREMENT Field?
+Auto-increment allows a unique number to be generated automatically when a new record is inserted into a table.
+
+The following SQL statement defines the "Personid" column to be an auto-increment primary key field in the "Persons" table:
+CREATE TABLE Persons (
+    Personid int NOT NULL AUTO_INCREMENT,
+    LastName varchar(255) NOT NULL,
+    FirstName varchar(255),
+    Age int,
+    PRIMARY KEY (Personid)
+);
+
+
+MySQL Working With Dates
+MySQL Date Data Types
+MySQL comes with the following data types for storing a date or a date/time value in the database:
+
+DATE - format YYYY-MM-DD
+DATETIME - format: YYYY-MM-DD HH:MI:SS
+TIMESTAMP - format: YYYY-MM-DD HH:MI:SS
+YEAR - format YYYY or YY
+
+SELECT * FROM Orders WHERE OrderDate='2008-11-11'
+
+MySQL Views
+A view contains rows and columns, just like a real table. The fields in a view are fields from one or more real tables in the database.
+
+The following SQL creates a view that shows all customers from Brazil:
+CREATE VIEW [Brazil Customers] AS
+SELECT CustomerName, ContactName
+FROM Customers
+WHERE Country = 'Brazil';
+
+
